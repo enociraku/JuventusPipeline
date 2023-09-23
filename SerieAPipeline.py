@@ -26,6 +26,9 @@ juventusWinningData = juventusData[((juventusData["HomeTeam"] == 'Juventus') & (
 year1 = 0
 # Second year in the football season
 year2 = 1
+# Initialize empty dataframe
+df = pd.DataFrame(columns = ["Div", "Date", "HomeTeam", "AwayTeam", "FTHG", "FTAG", "FTR"])
+
 
 for index in range(1, 101):
     
@@ -43,8 +46,9 @@ for index in range(1, 101):
     print(file_url)
     if requests.get(file_url).status_code == 200:
         urlData = requests.get(file_url).content
-        rawData = pd.read_csv(io.StringIO(urlData.decode('utf-8')), names=["Div", "HomeTeam", "AwayTeam", "FTHG", "FTAG", "FTR"])
-        cleanData = rawData[["Div", "HomeTeam", "AwayTeam", "FTHG", "FTAG", "FTR"]].dropna()
+        rawData = pd.read_csv(io.StringIO(urlData.decode('utf-8')), usecols = list(range(10))) # read only first 10 columns
+        cleanData = rawData[["Div", "Date", "HomeTeam", "AwayTeam", "FTHG", "FTAG", "FTR"]].dropna()
+        df = pd.concat([df, cleanData] ,ignore_index=True)
         print(cleanData)
         
     
